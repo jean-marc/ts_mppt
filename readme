@@ -1,0 +1,10 @@
+Simple program to extract data from MorningStar TriStar-MPPT-45 charge controller using ModBus protocol.
+The program is run as a cron job (every 5 minutes should be enough) and the data dumped into a log file as coma separated value.
+CGI scripts are used to plot historical data in differents formats: SVG, PNG, PDF.
+
+dependencies:
+libmodbus
+gawk
+gnuplot
+http server with CGI (thttpd, apache,...)
+
