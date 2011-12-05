@@ -8,3 +8,4 @@ gawk
 gnuplot
 http server with CGI (thttpd, apache,...)
 
+The client reads from `/dev/ts_mppt' which should be a symbolic link to a serial device (possibly set by udev rule)

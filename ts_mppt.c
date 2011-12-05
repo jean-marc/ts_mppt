@@ -12,7 +12,9 @@ int main(void)
 	uint16_t data[100];
 	
 	/* Setup the serial port parameters */
-	mb_param = modbus_new_rtu("/dev/ttyUSB0", 9600, 'N', 8, 2);
+	//need to create symbolic link
+	//mb_param = modbus_new_rtu("/dev/ttyUSB0", 9600, 'N', 8, 2);
+	mb_param = modbus_new_rtu("/dev/ts_mppt", 9600, 'N', 8, 2);
 	if (mb_param == NULL) {
 	    fprintf(stderr, "Unable to create the libmodbus context\n");
 	    return -1;
