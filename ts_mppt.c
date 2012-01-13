@@ -44,9 +44,12 @@ int main(void)
 	    modbus_free(mb_param);
 	    return -1;
 	}
+	//for debugging
+	/* 
 	for(int i=0;i<rc;++i)
 		printf("%X\t%X\n",i,data[i]);
 	printf("\n");
+	*/
 	#ifdef TS_MPPT_45
 	float V_PU=data[0x0];
 	/* Filtered ADC */
