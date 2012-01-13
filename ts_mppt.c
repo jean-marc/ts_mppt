@@ -2,48 +2,52 @@
 #include <stdlib.h>
 #include <modbus/modbus.h>
 
-#define TS_MPPT    0x01	/* MODBUS Address of the TS_MPPT */
+#define MODBUS_ADD    0x01	/* MODBUS Address of the TS_MPPT */
 
 int main(void)
 {
 	modbus_t* mb_param;
 	int ret;
 	int errno;
-	uint16_t data[100];
-	
-	/* Setup the serial port parameters */
-	//need to create symbolic link
-	//mb_param = modbus_new_rtu("/dev/ttyUSB0", 9600, 'N', 8, 2);
+	/* 
+ 	* 	Setup the serial port parameters 
+ 	* 	need to create symbolic link e.g: ln -s /dev/ttyUSB0 /dev/ts_mppt
+ 	*/
 	mb_param = modbus_new_rtu("/dev/ts_mppt", 9600, 'N', 8, 2);
 	if (mb_param == NULL) {
 	    fprintf(stderr, "Unable to create the libmodbus context\n");
 	    return -1;
 	}	
-	
 	/* Open the MODBUS connection */
 	if (modbus_connect(mb_param) == -1) {
 	    fprintf(stderr, "Connection failed: %s\n", modbus_strerror(errno));
 	    modbus_free(mb_param);
 	    return -1;
 	}
-	if(modbus_set_slave(mb_param,TS_MPPT)==-1){
+	if(modbus_set_slave(mb_param,MODBUS_ADD)==-1){
 	    fprintf(stderr, "set_slave failed: %s\n", modbus_strerror(errno));
 	    modbus_free(mb_param);
 	    return -1;
 	}
+	#ifdef TS_MPPT_45
+	int n_register=0x5b;
+	#else 
+	int n_register=0xe;
+	#endif
+	uint16_t data[n_register];
 	/*
-	/* Read the RAM Registers from 0x0 to 0x5b
+	 Read the RAM Registers from 0x0 to n
  	*/ 
-	if(modbus_read_registers(mb_param,0x0,0x5b+1,data)==-1){
+	int rc=modbus_read_registers(mb_param,0x0,n_register,data);
+	if(rc==-1){
 	    fprintf(stderr, "read_input_register failed: %s\n", modbus_strerror(errno));
 	    modbus_free(mb_param);
 	    return -1;
 	}
-	/*
-	for(int i=0;i<0x5b+1;++i)
+	for(int i=0;i<rc;++i)
 		printf("%X\t%X\n",i,data[i]);
 	printf("\n");
-	*/
+	#ifdef TS_MPPT_45
 	float V_PU=data[0x0];
 	/* Filtered ADC */
 	float adc_vb_f_med=data[0x18]*V_PU/32768;printf("adc_vb_f_med\t%f V\n",adc_vb_f_med);
@@ -80,5 +84,10 @@ int main(void)
 	float Pout_max_daily=data[0x46]*V_PU*I_PU/(1L<<17);printf("Pout_max_daily\t%f W\n",Pout_max_daily);
 	float Tb_max_daily=data[0x48]; printf("Tb_max_daily\t%f C\n",Tb_max_daily);
 	float time_ab_daily=data[0x4d]; printf("time_ab_daily\t%f s\n",time_ab_daily);
+	#else
+	printf("adc_vb_f\t%f V\n",data[0x8]*96.666/(1<<15));
+	printf("adc_vs_f\t%f V\n",data[0x9]*96.666/(1<<15));
+	printf("vb_f\t%f V\n",data[0xd]*96.666/(1<<15));
+	#endif
 	exit(0);
 }

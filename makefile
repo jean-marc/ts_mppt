@@ -1,8 +1,10 @@
-CC = gcc
+CC = gcc -std=c99
 BIN = /usr/local/bin
 WWW = /var/www
 
-ts_mppt: ts_mppt.c
+ts_mppt_45: ts_mppt.c
+	$(CC) -DTS_MPPT_45 -lmodbus ts_mppt.c -o ts_mppt
+ts_45: ts_mppt.c
 	$(CC) -lmodbus ts_mppt.c -o ts_mppt
 install:
 	cp ts_mppt ts_mppt.awk ts_mppt.sh $(BIN)
