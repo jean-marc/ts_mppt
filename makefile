@@ -3,9 +3,9 @@ BIN = /usr/local/bin
 WWW = /var/www
 
 ts_mppt_45: ts_mppt.c
-	$(CC) -DTS_MPPT_45 -lmodbus ts_mppt.c -o ts_mppt
+	$(CC) -DTS_MPPT_45 -lmodbus ts_mppt.c -o ts_mppt_45
 ts_45: ts_mppt.c
-	$(CC) -lmodbus ts_mppt.c -o ts_mppt
+	$(CC) -lmodbus ts_mppt.c -o ts_45
 install:
 	cp ts_mppt ts_mppt.awk ts_mppt.sh $(BIN)
 	cp plot.gnu svg.gnu png.gnu plot.png.cgi plot.svg.cgi $(WWW)/cgi-bin/
