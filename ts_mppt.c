@@ -36,7 +36,7 @@ int main(void)
 	#ifdef TS_MPPT_45
 	int n_register=0x5b;
 	#else 
-	int n_register=0xe;
+	int n_register=0x1e;
 	#endif
 	uint16_t data[n_register];
 	/*
@@ -94,7 +94,27 @@ int main(void)
 	#else
 	printf("adc_vb_f\t%.2f V\n",data[0x8]*96.666/(1<<15));
 	printf("adc_vs_f\t%.2f V\n",data[0x9]*96.666/(1<<15));
+	printf("adc_vx_f\t%.2f V\n",data[0xa]*139.15/(1<<15));
+	printf("adc_ipv_f\t%.2f A\n",data[0xb]*66.667/(1<<15));
+	printf("adc_iload_f\t%.2f A\n",data[0xc]*316.67/(1<<15));
 	printf("vb_f\t%.2f V\n",data[0xd]*96.666/(1<<15));
+	printf("t_hs\t%i C\n",data[0xe]);
+	printf("t_batt\t%i C\n",data[0xf]);
+	printf("v_ref\t%.2f V\n",data[0x10]*96.666/(1<<15));
+	//data is 2 bytes
+	int Ah_r=((int)data[0x11]<<16)+data[0x12];
+	printf("Ah_r\t%.2f Ah\n",Ah_r*0.1);
+	int Ah_t=((int)data[0x13]<<16)+data[0x14];
+	printf("Ah_t\t%i Ah\n",Ah_t);
+	int hourmeter=((int)data[0x15]<<16)+data[0x16];
+	printf("hourmeter\t%i h\n",hourmeter);
+	int alarm=((int)data[0x1d]<<16)+data[0x17];
+	printf("alarm\t%x\n",alarm);
+	printf("fault\t%x\n",data[0x18]);
+	printf("dip_switch\t%x\n",data[0x19]);
+	printf("control_mode\t%x\n",data[0x1a]);
+	printf("control_state\t%x\n",data[0x1b]);
+	printf("d_filt\t%i\n",data[0x1c]);
 	#endif
 	exit(0);
 }
